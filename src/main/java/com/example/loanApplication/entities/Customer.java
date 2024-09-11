@@ -1,13 +1,35 @@
 package com.example.loanApplication.entities;
 
+
 public class Customer {
-    Long customerId;
-    String name;
-    int age;
-    String email;
-    String address;
+    private Long customerId;
+    private String name;
+    private String email;
+    private String address;
+    private int age;
 
+    //No-args constructor
+    public Customer(){
+    }
 
+    //All-args constructor
+    public Customer(Long customerId, String name, String email, String address, int age) {
+        this.customerId = customerId;
+        this.name = name;
+        this.email = email;
+        this.address = address;
+        this.age = age;
+    }
+
+    //Constructor with name, email, address
+    public Customer(String name, String email, String address) {
+        this.name = name;
+        this.email = email;
+        this.address = address;
+        this.age = 0; //age initialized with default value zero.
+    }
+
+    //Getters and Setters
     public Long getCustomerId() {
         return customerId;
     }
@@ -22,14 +44,6 @@ public class Customer {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
     }
 
     public String getEmail() {
@@ -48,7 +62,11 @@ public class Customer {
         this.address = address;
     }
 
-    public Customer() {
+    public int getAge() {
+        return age;
+    }
 
+    public void setAge(int age) {
+        this.age = age;
     }
 }
