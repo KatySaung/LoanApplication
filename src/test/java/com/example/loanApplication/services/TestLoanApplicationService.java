@@ -1,4 +1,4 @@
-package com.example.loanApplication.service;
+package com.example.loanApplication.services;
 
 import org.mockito.InjectMocks;
 
