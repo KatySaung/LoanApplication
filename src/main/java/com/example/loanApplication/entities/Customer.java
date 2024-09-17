@@ -22,13 +22,6 @@ public class Customer {
     public Customer(){
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     //All-args constructor
     public Customer(Long customerId, String name, String email, String address, int age, String username) {
@@ -49,6 +42,14 @@ public class Customer {
     }
 
     //Getters and Setters
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public Long getCustomerId() {
         return customerId;
     }
