@@ -5,6 +5,7 @@ import com.example.loanApplication.dtos.CustomerDTO;
 import com.example.loanApplication.entities.Customer;
 import com.example.loanApplication.exceptions.MaxLengthOfNameException;
 import com.example.loanApplication.repositories.CustomerRepository;
+import com.example.loanApplication.services.impl.CustomerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
-import java.util.Optional;
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,7 +26,7 @@ public class TestCustomerService {
     private CustomerRepository customerRepository;
 
     @InjectMocks
-    private CustomerService customerService;
+    private CustomerServiceImpl customerServiceImpl;
 
     private Long customerId;
     private CustomerDTO customerDTO;
@@ -36,7 +36,7 @@ public class TestCustomerService {
     public void setUp(){
             customerId = 1L;
             customerDTO = new CustomerDTO(
-                    1L, //if customerID not set by client
+                    null, //auto-generated
                     "Bobby Humphrey",
                     "bobbyhumphrey@fakemail.com",
                     100,
@@ -61,7 +61,7 @@ public class TestCustomerService {
         when(customerRepository.save(any(Customer.class))).thenReturn(customer);
 
         // Act
-        Customer createdCustomer = customerService.createCustomer(customerDTO);
+        Customer createdCustomer = customerServiceImpl.createCustomer(customerDTO);
 
          assertAll(
                  () -> assertNotNull(createdCustomer),
@@ -89,11 +89,11 @@ public class TestCustomerService {
 
         // Assert
         MaxLengthOfNameException thrownException = assertThrows(MaxLengthOfNameException.class, () -> {
-            customerService.createCustomer(customerDTO);
+            customerServiceImpl.createCustomer(customerDTO);
         });
 
         // Verify the exception message
-        assertEquals("Name exceeds 255 length", thrownException.getMessage());
+        assertEquals("Name cannot exceed 255 in length", thrownException.getMessage());
 
     }
 

@@ -1,6 +1,8 @@
 package com.example.loanApplication.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.List;
 
@@ -9,6 +11,7 @@ import java.util.List;
 public class Customer {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_seq")
     private Long customerId;
 
     private String name;
