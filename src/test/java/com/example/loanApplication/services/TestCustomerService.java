@@ -3,7 +3,9 @@ package com.example.loanApplication.services;
 
 import com.example.loanApplication.dtos.CustomerDTO;
 import com.example.loanApplication.entities.Customer;
+import com.example.loanApplication.exceptions.DuplicateCustomerException;
 import com.example.loanApplication.exceptions.MaxLengthOfNameException;
+import com.example.loanApplication.exceptions.NullCustomerDTOException;
 import com.example.loanApplication.repositories.CustomerRepository;
 import com.example.loanApplication.services.impl.CustomerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +55,6 @@ public class TestCustomerService {
 
     }
 
-
     //Success Test
     @Test
     public void testCreateCustomer() throws MaxLengthOfNameException {
@@ -79,7 +80,7 @@ public class TestCustomerService {
     public void createCustomerWithMaxLengthOfNameExceptionTest() {
         String maxLength = "a".repeat(256);
         CustomerDTO customerDTO = new CustomerDTO(
-                1L,
+                null,
                 maxLength,
                 "bobbyHumphrey@fakemail.com",
                 100,
@@ -97,9 +98,47 @@ public class TestCustomerService {
 
     }
 
+    @Test
+    public void createCustomerWithNullCustomerDTOExceptionTest(){
+        assertThrows(NullCustomerDTOException.class, () -> {
+            customerServiceImpl.createCustomer(null);
+        });
+    }
+
+    //Test for Handling Duplicate Customer usernames
+    @Test
+    public void createCustomerWithDuplicateUsernameTest(){
+        when(customerRepository.existsByUsername(customerDTO.username())).thenReturn(true);
+
+         DuplicateCustomerException duplicateCustomerException = assertThrows(DuplicateCustomerException.class, () -> {
+            customerServiceImpl.createCustomer(customerDTO);
+        });
+
+         assertEquals("Username already exists", duplicateCustomerException.getMessage());
+    }
+
+
+
+    //Test for Successful Retrieval of Customer
+
+
+    //Test for Customer Not Found Scenario
+
+
+    //Test for Updating Customer Details
+
+
+
+    //Test for Deleting a Customer
+
+
+
+    //Test for Exception When Deleting Non-Existent Customer
+
 
 
     //Failure Test
+
 
 
     //Integration Test
