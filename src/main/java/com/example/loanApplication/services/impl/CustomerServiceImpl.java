@@ -2,6 +2,7 @@ package com.example.loanApplication.services.impl;
 
 import com.example.loanApplication.dtos.CustomerDTO;
 import com.example.loanApplication.entities.Customer;
+import com.example.loanApplication.exceptions.CustomerNotFoundException;
 import com.example.loanApplication.exceptions.DuplicateCustomerException;
 import com.example.loanApplication.exceptions.MaxLengthOfNameException;
 import com.example.loanApplication.exceptions.NullCustomerDTOException;
@@ -43,6 +44,17 @@ public class CustomerServiceImpl implements CustomerService {
 
         return customerRepository.save(customer);
 
+    }
+
+    @Override
+    public CustomerDTO getCustomerById(Long id){
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new CustomerNotFoundException("Customer not found with this id: " + id));
+        return convertToDTO(customer);
+    }
+
+    private CustomerDTO convertToDTO(Customer customer){
+        return new CustomerDTO(customer.getCustomerId(), customer.getName(),customer.getEmail(),customer.getAge(),customer.getUsername(), customer.getRoles());
     }
 
 

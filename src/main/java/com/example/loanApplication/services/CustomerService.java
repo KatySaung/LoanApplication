@@ -5,4 +5,5 @@ import com.example.loanApplication.entities.Customer;
 
 public interface CustomerService {
     Customer createCustomer(CustomerDTO customerDTO);
+    CustomerDTO getCustomerById(Long id);
 }

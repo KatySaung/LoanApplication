@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
+import java.util.Optional;
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,6 +50,7 @@ public class TestCustomerService {
             customer = new Customer();
             customer.setCustomerId(customerId);
             customer.setName("Bobby Humphrey");
+            customer.setEmail("bobbyhumphrey@fakemail.com");
             customer.setAge(100);
             customer.setUsername("bhumphrey");
             customer.setRoles(Collections.emptyList());
@@ -78,6 +80,7 @@ public class TestCustomerService {
 
     @Test
     public void createCustomerWithMaxLengthOfNameExceptionTest() {
+        //Arrange: set up
         String maxLength = "a".repeat(256);
         CustomerDTO customerDTO = new CustomerDTO(
                 null,
@@ -88,12 +91,12 @@ public class TestCustomerService {
                 Collections.emptyList()
         );
 
-        // Assert
+        // Act: assertThrows to execute behavior
         MaxLengthOfNameException thrownException = assertThrows(MaxLengthOfNameException.class, () -> {
             customerServiceImpl.createCustomer(customerDTO);
         });
 
-        // Verify the exception message
+        // Assert: Verify the exception message
         assertEquals("Name cannot exceed 255 in length", thrownException.getMessage());
 
     }
@@ -108,18 +111,35 @@ public class TestCustomerService {
     //Test for Handling Duplicate Customer usernames
     @Test
     public void createCustomerWithDuplicateUsernameTest(){
+
+        //Arrange
         when(customerRepository.existsByUsername(customerDTO.username())).thenReturn(true);
 
          DuplicateCustomerException duplicateCustomerException = assertThrows(DuplicateCustomerException.class, () -> {
             customerServiceImpl.createCustomer(customerDTO);
         });
 
+        //Act and Assert
          assertEquals("Username already exists", duplicateCustomerException.getMessage());
     }
 
 
-
     //Test for Successful Retrieval of Customer
+    @Test
+    public void testGetCustomerByIdSuccess(){
+
+        //Mock repo. Arrange happened in @BeforeEach setUp() method
+        when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
+
+        //Act
+        CustomerDTO result = customerServiceImpl.getCustomerById(customerId);
+
+        //Assert
+        assertNotNull(result);
+        assertEquals(customerDTO.name(), result.name());
+        assertEquals(customerDTO.email(), result.email());
+
+    }
 
 
     //Test for Customer Not Found Scenario
