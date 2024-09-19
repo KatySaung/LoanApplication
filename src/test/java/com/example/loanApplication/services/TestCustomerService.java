@@ -3,6 +3,7 @@ package com.example.loanApplication.services;
 
 import com.example.loanApplication.dtos.CustomerDTO;
 import com.example.loanApplication.entities.Customer;
+import com.example.loanApplication.exceptions.CustomerNotFoundException;
 import com.example.loanApplication.exceptions.DuplicateCustomerException;
 import com.example.loanApplication.exceptions.MaxLengthOfNameException;
 import com.example.loanApplication.exceptions.NullCustomerDTOException;
@@ -38,6 +39,7 @@ public class TestCustomerService {
     @BeforeEach
     public void setUp(){
             customerId = 1L;
+
             customerDTO = new CustomerDTO(
                     null, //auto-generated
                     "Bobby Humphrey",
@@ -59,7 +61,7 @@ public class TestCustomerService {
 
     //Success Test
     @Test
-    public void testCreateCustomer() throws MaxLengthOfNameException {
+    public void testCreateCustomer(){
         // Stub
         when(customerRepository.save(any(Customer.class))).thenReturn(customer);
 
@@ -141,8 +143,23 @@ public class TestCustomerService {
 
     }
 
-
     //Test for Customer Not Found Scenario
+    @Test
+    public void testGetCustomerByIdNotFound(){
+
+        //Arrange
+        Long noExistingId = 0000L;
+        when(customerRepository.findById(noExistingId)).thenReturn(Optional.empty());
+
+        //Act
+        CustomerNotFoundException customerNotFoundException = assertThrows(CustomerNotFoundException.class, () ->{
+            customerServiceImpl.getCustomerById(noExistingId);
+        });
+
+        //Assert
+        assertEquals("Customer not found with this id: " + noExistingId, customerNotFoundException.getMessage());
+
+    }
 
 
     //Test for Updating Customer Details
