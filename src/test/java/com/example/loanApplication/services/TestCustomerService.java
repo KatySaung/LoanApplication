@@ -163,6 +163,34 @@ public class TestCustomerService {
 
 
     //Test for Updating Customer Details
+    @Test
+    public void testUpdateCustomerByIdSuccess(){
+        //Arrange
+        when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
+        when(customerRepository.save(any(Customer.class))).thenReturn(customer);
+
+        CustomerDTO updatedCustomerDTO = new CustomerDTO(
+                customerId,
+                "Bob Humphrey",
+                "bobbyHumphrey123@fakemail.com",
+                21,
+                "bobhumphrey_updated",
+                Collections.emptyList()
+        );
+
+        //Act
+        CustomerDTO result = customerServiceImpl.updateCustomerById(customerId, updatedCustomerDTO);
+
+        //Assert
+        assertNotNull(result);
+        assertEquals("Bob Humphrey", result.name());
+        assertEquals("bobbyHumphrey123@fakemail.com", result.email());
+        assertEquals(21, result.age());
+        assertEquals("bobhumphrey_updated", result.username());
+        verify(customerRepository).findById(customerId);
+        verify(customerRepository).save(any(Customer.class));
+
+    }
 
 
 
