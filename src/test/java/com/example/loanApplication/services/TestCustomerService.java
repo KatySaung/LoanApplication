@@ -163,39 +163,6 @@ public class TestCustomerService {
 
 
     //Test for Updating Customer Details
-    @Test
-<<<<<<< HEAD
-    public void testUpdateCustomer(){
-        //Arrange
-        CustomerDTO updatedCustomerDTO = new CustomerDTO(
-                null,
-                "Herbie Hancock",
-                "hhancock@fakemail.com",
-                25,
-                "herbie",
-                Collections.emptyList()
-        );
-        Customer updatedCustomer = new Customer();
-
-        when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
-        when(customerRepository.save(any(Customer.class))).thenReturn(updatedCustomer);
-
-        //Act
-        Customer result = customerServiceImpl.updateCustomerDetails(customerId, updatedCustomerDTO);
-
-        //Assert
-        assertAll(
-                () -> assertNotNull(result),
-                () -> assertEquals(updatedCustomerDTO.name(),result.getName()),
-                () -> assertEquals(updatedCustomerDTO.email(),result.getEmail()),
-                () -> assertEquals(updatedCustomerDTO.age(),result.getAge()),
-                () -> assertEquals(updatedCustomerDTO.username(),result.getUsername())
-        );
-
-        verify((customerRepository).findById(customerId));
-        verify(customerRepository).save(updatedCustomer);
-
-=======
     public void testUpdateCustomerByIdSuccess(){
         //Arrange
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
@@ -221,7 +188,7 @@ public class TestCustomerService {
         assertEquals("bobhumphrey_updated", result.username());
         verify(customerRepository).findById(customerId);
         verify(customerRepository).save(any(Customer.class));
->>>>>>> main
+
 
     }
 
