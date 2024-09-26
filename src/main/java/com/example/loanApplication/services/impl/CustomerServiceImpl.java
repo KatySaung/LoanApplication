@@ -57,5 +57,23 @@ public class CustomerServiceImpl implements CustomerService {
         return new CustomerDTO(customer.getCustomerId(), customer.getName(),customer.getEmail(),customer.getAge(),customer.getUsername(), customer.getRoles());
     }
 
+    @Override
+    public CustomerDTO updateCustomerById(Long id,CustomerDTO customerDTO){
+        if(customerDTO == null){
+            throw new NullCustomerDTOException("CustomerDTO cannot be null, enter a valid input " + id);
+        }
+        Customer existingCustomerId = customerRepository.findById(id)
+                .orElseThrow(() ->new CustomerNotFoundException("Customer not found with this id " + id));
+
+        existingCustomerId.setName(customerDTO.name());
+        existingCustomerId.setEmail(customerDTO.email());
+        existingCustomerId.setAge(customerDTO.age());
+        existingCustomerId.setUsername(customerDTO.username());
+
+        Customer updateCustomerById = customerRepository.save(existingCustomerId);
+        return convertToDTO(updateCustomerById);
+
+    }
+
 
 }
