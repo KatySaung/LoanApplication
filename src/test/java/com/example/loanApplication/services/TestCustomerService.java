@@ -163,6 +163,7 @@ public class TestCustomerService {
 
 
     //Test for Updating Customer Details
+    @Test
     public void testUpdateCustomerByIdSuccess(){
         //Arrange
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
@@ -189,12 +190,39 @@ public class TestCustomerService {
         verify(customerRepository).findById(customerId);
         verify(customerRepository).save(any(Customer.class));
 
+    }
+
+    //Test for Deleting a Customer
+    @Test
+    public void testDeleteCustomerByIdSuccess(){
+        //Arrange
+        when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
+
+        //Act
+        customerServiceImpl.deleteCustomerById(customerId);
+
+        //Assert
+        verify(customerRepository).findById(customerId);
+        verify(customerRepository).delete(customer);
 
     }
 
+    @Test
+    public void testDeleteCustomerByIdNotFound(){
+        //Arrange
+        when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
+
+        //Act & Assert
+        assertThrows(CustomerNotFoundException.class, () ->{
+            customerServiceImpl.deleteCustomerById(customerId);
+        });
 
 
-    //Test for Deleting a Customer
+        //verify behavior
+        verify(customerRepository).findById(customerId);
+        verify(customerRepository, never()).delete(any(Customer.class));
+
+    }
 
 
 

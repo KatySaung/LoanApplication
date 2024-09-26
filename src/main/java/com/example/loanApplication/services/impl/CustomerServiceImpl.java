@@ -53,10 +53,6 @@ public class CustomerServiceImpl implements CustomerService {
         return convertToDTO(customer);
     }
 
-    private CustomerDTO convertToDTO(Customer customer){
-        return new CustomerDTO(customer.getCustomerId(), customer.getName(),customer.getEmail(),customer.getAge(),customer.getUsername(), customer.getRoles());
-    }
-
     @Override
     public CustomerDTO updateCustomerById(Long id,CustomerDTO customerDTO){
         if(customerDTO == null){
@@ -75,5 +71,15 @@ public class CustomerServiceImpl implements CustomerService {
 
     }
 
+    @Override
+    public void deleteCustomerById(Long id){
+        Customer existingCustomer = customerRepository.findById(id)
+                .orElseThrow(() -> new CustomerNotFoundException("Customer not found with this id " + id));
+        customerRepository.delete(existingCustomer);
+    }
 
+
+    private CustomerDTO convertToDTO(Customer customer){
+        return new CustomerDTO(customer.getCustomerId(), customer.getName(),customer.getEmail(),customer.getAge(),customer.getUsername(), customer.getRoles());
+    }
 }

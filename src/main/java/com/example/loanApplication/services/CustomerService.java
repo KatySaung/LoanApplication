@@ -7,5 +7,5 @@ public interface CustomerService {
     Customer createCustomer(CustomerDTO customerDTO);
     CustomerDTO getCustomerById(Long id);
     CustomerDTO updateCustomerById(Long id, CustomerDTO customerDTO);
-    //void deleteCustomer(Long id);
+    void deleteCustomerById(Long id);
 }
