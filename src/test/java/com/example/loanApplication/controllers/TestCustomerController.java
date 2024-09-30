@@ -95,9 +95,22 @@ public class TestCustomerController {
 
     }
 
-
-
     //Update Customer
+    @Test
+    public void testUpdateCustomerId(){
+        //Arrange
+        customerId = 1L;
+        CustomerDTO updatedCustomerDTO = new CustomerDTO(
+                customerId,
+
+        );
+        //Act
+
+        //Assert
+
+
+    }
+
 
     //Delete Customer
 
