@@ -5,12 +5,13 @@ import com.example.loanApplication.entities.Customer;
 import com.example.loanApplication.services.CustomerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
 
@@ -19,8 +20,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest
 public class TestCustomerController {
+
+    @Autowired
+    private MockMvc mockMvc;
 
     @Mock
     private CustomerService customerService;
@@ -102,6 +106,7 @@ public class TestCustomerController {
         customerId = 1L;
         CustomerDTO updatedCustomerDTO = new CustomerDTO(
                 customerId,
+                //in test use assertThat to make assertions about outcomes of test or to use doThrow() to make an exception handling here?
 
         );
         //Act
