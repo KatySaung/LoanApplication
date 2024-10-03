@@ -10,6 +10,7 @@ import com.example.loanApplication.exceptions.NullCustomerDTOException;
 import com.example.loanApplication.repositories.CustomerRepository;
 import com.example.loanApplication.services.impl.CustomerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -145,6 +146,7 @@ public class TestCustomerService {
 
     //Test for Customer Not Found Scenario
     @Test
+//    @DisplayName()
     public void testGetCustomerByIdNotFound(){
 
         //Arrange

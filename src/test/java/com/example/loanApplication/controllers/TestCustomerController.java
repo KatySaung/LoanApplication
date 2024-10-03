@@ -5,28 +5,38 @@ import com.example.loanApplication.entities.Customer;
 import com.example.loanApplication.services.CustomerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest
+@ExtendWith(SpringExtension.class)
+@WebMvcTest(CustomerController.class)
 public class TestCustomerController {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+    @Autowired
+    private ObjectMapper objectMapper;  // POST AND PUT
+
+    @MockBean
     private CustomerService customerService;
 
     @InjectMocks
@@ -35,17 +45,20 @@ public class TestCustomerController {
     private Long customerId;
     private CustomerDTO customerDTO;
 
+
+
     @BeforeEach
     public void setUp(){
 
         customerDTO = new CustomerDTO(
                 null, //auto-generated
-                "Bobby Humphrey",
+                "Bobby Humphrey",  // This is the full customer name
                 "bobbyhumphrey@fakemail.com",
                 100,
                 "bhumphrey",
                 Collections.emptyList()
         );
+
     }
 
     //Helper method to convert customer to customerDTO to reduce boilerplate code in test create Customer method
@@ -63,24 +76,32 @@ public class TestCustomerController {
 
     //Success (Controller perform correct CRUD methods under normal conditions)
     @Test
-    public void testCreateCustomer(){
-        Customer createdCustomer= createCustomerEntity();
+    public void testCreateCustomer() throws Exception {
+//        Customer createdCustomer= createCustomerEntity();
 
         //Arrange: Behavior of mock service
-        when(customerService.createCustomer(any(CustomerDTO.class))).thenReturn(createdCustomer);
+        when(customerService.createCustomer(any())).thenReturn(createCustomerEntity());
 
-        //Act: Call controller method
-        ResponseEntity<CustomerDTO> response = customerController.createCustomer(customerDTO);
+//        //Act: Call controller method
+//        ResponseEntity<CustomerDTO> response = customerController.createCustomer(customerDTO);
+//
+//        //Assert: Check response status
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//
+//        //Assert: make sure the response body is not null
+//        CustomerDTO responseBody = response.getBody(); //make sure response body is not null
+//        assertNotNull(responseBody, "Response body cannot be null");
+//
+//        //Assert: Check response body
+//        assertEquals(customerDTO.name(), response.getBody().name());
+        mockMvc.perform(post("/customers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString("bhumphrey")))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.age").value(100));
 
-        //Assert: Check response status
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-
-        //Assert: make sure the response body is not null
-        CustomerDTO responseBody = response.getBody(); //make sure response body is not null
-        assertNotNull(responseBody, "Response body cannot be null");
-
-        //Assert: Check response body
-        assertEquals(customerDTO.name(), response.getBody().name());
+        //verify()
 
     }
 

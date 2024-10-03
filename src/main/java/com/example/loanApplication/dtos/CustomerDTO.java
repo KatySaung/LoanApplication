@@ -1,6 +1,9 @@
 package com.example.loanApplication.dtos;
 
+import lombok.Data;
+
 import java.util.List;
+
 
 public record CustomerDTO(
         Long customerId,
