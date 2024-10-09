@@ -20,7 +20,11 @@ import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
@@ -54,60 +58,72 @@ public class TestCustomerController {
                 "bhumphrey",
                 Collections.emptyList()
         );
-
-        customer = new Customer();
-        customer.setName(customerDTO.name());
-        customer.setEmail(customerDTO.email());
-        customer.setAge(customerDTO.age());
-        customer.setUsername(customerDTO.username());
-        customer.setRoles(Collections.emptyList());
-
     }
 
     //Success (Controller perform correct CRUD methods under normal conditions)
     @Test
     public void testCreateCustomer() throws Exception {
+        Long customerId = 1L;
+        Customer createdCustomer = new Customer();
 
-        //Arrange: Behavior of mock service
-//        Customer savedCustomer = new Customer();
-//        savedCustomer.setCustomerId(1L);
-//        savedCustomer.setName(customerDTO.name());
-//        savedCustomer.setEmail(customerDTO.email());
-//        savedCustomer.setAge(customerDTO.age());
-//        savedCustomer.setUsername(customerDTO.username());
-//        savedCustomer.setRoles(customerDTO.roles());
+        createdCustomer.setCustomerId(customerId);
+        createdCustomer.setName(customerDTO.name());
+        createdCustomer.setEmail(customerDTO.email());
+        createdCustomer.setAge(customerDTO.age());
+        createdCustomer.setUsername(customerDTO.username());
+        createdCustomer.setRoles(Collections.emptyList());
 
-        when(customerService.createCustomer(any(CustomerDTO.class))).thenReturn(customer);
+
+        when(customerService.createCustomer(any(CustomerDTO.class))).thenReturn(createdCustomer);
 
         mockMvc.perform(post("/customers")
+                        .with(user("username").roles("USER"))
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(customerDTO)))
-                .andExpect(status().isCreated());
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(jsonPath("$.id").value(1L))
-//                .andExpect(jsonPath("$.name").value("Bobby Humphrey"))
-//                .andExpect(jsonPath("$.email").value("bobbyhumphrey@fakemail.com"))
-//                .andExpect(jsonPath("$.age").value(100));
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.customerId").value(customerId))
+                .andExpect(jsonPath("$.name").value("Bobby Humphrey"))
+                .andExpect(jsonPath("$.email").value("bobbyhumphrey@fakemail.com"))
+                .andExpect(jsonPath("$.age").value(100));
 
         //verify()
-        verify(customerService, times(1)).createCustomer(any(CustomerDTO.class));
+        verify(customerService, times(1)).createCustomer(customerDTO);
 
     }
 
     //Retrieve customer
-//    @Test
-//    public void testGetCustomerById(){
-//        //Arrange:
-//        when(customerService.getCustomerById(customerId)).thenReturn(customerDTO);
-//
-//        //Act
-//        ResponseEntity<CustomerDTO> response = customerController.getCustomerById(customerId);
-//
-//        //Assert
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertEquals(customerDTO, response.getBody());
-//
-//    }
+    @Test
+    public void testGetCustomerById() throws Exception{
+        //Arrange:
+        Long customerId1 = 2L;
+        CustomerDTO customerDTO = new CustomerDTO(
+                customerId1,
+                "Mackie",
+                "Mackie@samashemail.com",
+                70,
+                "Mackie2404VLZ4",
+                Collections.emptyList()
+        );
+
+        when(customerService.getCustomerById(customerId1)).thenReturn(customerDTO);
+
+        //Act
+        mockMvc.perform(get("/customers/{id}", customerId1)
+                .with(user("username").roles("USER"))
+                .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.customerId").value(customerId1))
+                .andExpect(jsonPath("$.name").value(customerDTO.name()))
+                .andExpect(jsonPath("$.email").value(customerDTO.email()))
+                .andExpect(jsonPath("$.age").value(customerDTO.age()))
+                .andExpect(jsonPath("$.username").value(customerDTO.username()));
+
+        //Verify
+        verify(customerService).getCustomerById(customerId1);
+
+    }
 
     //Update Customer
 //    @Test

@@ -3,6 +3,7 @@ package com.example.loanApplication.controllers;
 import com.example.loanApplication.dtos.CustomerDTO;
 import com.example.loanApplication.entities.Customer;
 import com.example.loanApplication.services.CustomerService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,7 @@ public class CustomerController {
                 Collections.emptyList()
         );
 
-        return ResponseEntity.ok(createdCustomerDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCustomerDTO);
 
     }
     @GetMapping("/{id}")

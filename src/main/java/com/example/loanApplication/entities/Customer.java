@@ -25,7 +25,6 @@ public class Customer {
     public Customer(){
     }
 
-
     //All-args constructor
     public Customer(Long customerId, String name, String email, String address, int age, String username) {
         this.customerId = customerId;
@@ -43,6 +42,7 @@ public class Customer {
         this.address = address;
         this.age = 0;//age initialized with default value zero.
     }
+
 
     //Getters and Setters
     public String getUsername() {
